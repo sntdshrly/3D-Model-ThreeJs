@@ -22,33 +22,36 @@ window.addEventListener('resize', (evt) => {
 controls = new THREE.OrbitControls(camera, renderer.domElement);
 // Light
 const light01 = new THREE.DirectionalLight(0x696880);
-light01.intensity = 2;
-light01.position.set(0,2,0);
+light01.intensity = 100;
+light01.position.set(0,300,0);
 light01.castShadow = true;
 scene.add(light01);
-// hlight = new THREE.AmbientLight(0x404040, 100);
-// scene.add(hlight);
-// directionalLight = new THREE.DirectionalLight(0x696880, 100);
-// directionalLight.position.set(0, 1, 0);
-// directionalLight.castShadow = true;
-// scene.add(directionalLight);
-// light = new THREE.PointLight(0xc4c4c4, 10);
-// light.position.set(0, 300, 500);
-// scene.add(light);
-// light2 = new THREE.PointLight(0xc4c4c4, 10);
-// light2.position.set(500, 100, 0);
-// scene.add(light2);
-// light3 = new THREE.PointLight(0xc4c4c4, 10);
-// light3.position.set(0, 100, -500);
-// scene.add(light3);
-// light4 = new THREE.PointLight(0xc4c4c4, 10);
-// light4.position.set(-500, 300, 500);
-// scene.add(light4);
+hlight = new THREE.AmbientLight(0x404040, 1);
+scene.add(hlight);
+directionalLight = new THREE.DirectionalLight(0x696880, 1);
+directionalLight.position.set(0, 1, 0);
+directionalLight.castShadow = true;
+scene.add(directionalLight);
+light = new THREE.PointLight(0xc4c4c4, 10);
+light.position.set(0, 300, 500);
+scene.add(light);
+light2 = new THREE.PointLight(0xc4c4c4, 10);
+light2.position.set(500, 100, 0);
+scene.add(light2);
+light3 = new THREE.PointLight(0xc4c4c4, 10);
+light3.position.set(0, 100, -500);
+scene.add(light3);
+light4 = new THREE.PointLight(0xc4c4c4, 10);
+light4.position.set(-500, 300, 500);
+scene.add(light4);
 // Helper
-const helper01 = new THREE.PointLightHelper(light01,200,new THREE.Color(1,0,0));
-scene.add(helper01);
+// const helper01 = new THREE.PointLightHelper(light01,200,new THREE.Color(1,0,0));
+// scene.add(helper01);
 // Texture
 const grassTexture = new THREE.TextureLoader().load('assets/grass/grass1-albedo3.png');
+const grassTextureAo = new THREE.TextureLoader().load('assets/grass/grass1-ao.png');
+const grassTextureHeight = new THREE.TextureLoader().load('assets/grass/grass1-height.png');
+const grassTextureNormal = new THREE.TextureLoader().load('assets/grass/grass1-normal1-ogl.png');
 // Car
 let loader = new THREE.GLTFLoader();
 loader.load('assets/scene.gltf', function (gltf) {
@@ -59,7 +62,8 @@ loader.load('assets/scene.gltf', function (gltf) {
 });
 // Floor
 const geo = new THREE.BoxGeometry(5000,10,5000);
-const mat = new THREE.MeshStandardMaterial({map:grassTexture});
+const mat = new THREE.MeshBasicMaterial({map:grassTexture});
+// const mat = new THREE.MeshLambertMaterial({map:grassTexture, aoMap: grassTextureAo, bumpMap: grassTextureHeight, normalMap: grassTextureNormal});
 const floor = new THREE.Mesh(geo,mat);
 floor.position.set(0,-100,0);
 floor.receiveShadow = true;
