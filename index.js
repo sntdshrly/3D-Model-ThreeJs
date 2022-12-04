@@ -21,19 +21,14 @@ window.addEventListener('resize', (evt) => {
 });
 controls = new THREE.OrbitControls(camera, renderer.domElement);
 // Light
-const light01 = new THREE.DirectionalLight(0x696880);
-light01.intensity = 100;
-light01.position.set(0,300,0);
-light01.castShadow = true;
-scene.add(light01);
-hlight = new THREE.AmbientLight(0x404040, 1);
+hlight = new THREE.AmbientLight(0x404040, 0.2);
 scene.add(hlight);
-directionalLight = new THREE.DirectionalLight(0x696880, 1);
-directionalLight.position.set(0, 1, 0);
+directionalLight = new THREE.DirectionalLight(0x696880, 100);
+directionalLight.position.set(0,500,500);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
 light = new THREE.PointLight(0xc4c4c4, 10);
-light.position.set(0, 300, 500);
+light.position.set(-500, 100, 0);
 scene.add(light);
 light2 = new THREE.PointLight(0xc4c4c4, 10);
 light2.position.set(500, 100, 0);
@@ -42,11 +37,13 @@ light3 = new THREE.PointLight(0xc4c4c4, 10);
 light3.position.set(0, 100, -500);
 scene.add(light3);
 light4 = new THREE.PointLight(0xc4c4c4, 10);
-light4.position.set(-500, 300, 500);
+light4.position.set(0, 100, 500);
 scene.add(light4);
 // Helper
-// const helper01 = new THREE.PointLightHelper(light01,200,new THREE.Color(1,0,0));
+// const helper01 = new THREE.PointLightHelper(directionalLight,200,new THREE.Color(1,0,0));
 // scene.add(helper01);
+const helper02 = new THREE.DirectionalLightHelper(directionalLight, 200, new THREE.Color(1, 0, 0));
+scene.add(helper02);
 // Texture
 const grassTexture = new THREE.TextureLoader().load('assets/grass/grass1-albedo3.png');
 const grassTextureAo = new THREE.TextureLoader().load('assets/grass/grass1-ao.png');
@@ -59,13 +56,14 @@ loader.load('assets/scene.gltf', function (gltf) {
     car.scale.set(0.25, 0.25, 0.25);
     car.position.set(0, 0, 0);
     scene.add(gltf.scene);
+    directionalLight.target = gltf.scene;
 });
 // Floor
-const geo = new THREE.BoxGeometry(5000,10,5000);
-const mat = new THREE.MeshBasicMaterial({map:grassTexture});
+const geo = new THREE.BoxGeometry(5000, 10, 5000);
+const mat = new THREE.MeshBasicMaterial({ map: grassTexture });
 // const mat = new THREE.MeshLambertMaterial({map:grassTexture, aoMap: grassTextureAo, bumpMap: grassTextureHeight, normalMap: grassTextureNormal});
-const floor = new THREE.Mesh(geo,mat);
-floor.position.set(0,-100,0);
+const floor = new THREE.Mesh(geo, mat);
+floor.position.set(0, -100, 0);
 floor.receiveShadow = true;
 scene.add(floor);
 // Animate
