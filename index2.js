@@ -21,11 +21,11 @@ document.body.appendChild(renderer.domElement);
 // });
 // controls = new THREE.OrbitControls(camera, renderer.domElement);
 // Background
-// renderer.toneMapping = THREE.ACESFilmicToneMapping;
-// renderer.toneMappingExposure = 0.6;
-// renderer.outputEncoding = THREE.sRGBEncoding;
-let loader =  new THREE.RGBELoader();
-loader.load('/assets/bg/forest_4k.hdr', function (texture) {
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.6;
+renderer.outputEncoding = THREE.sRGBEncoding;
+let loader_bg =  new THREE.RGBELoader();
+loader_bg.load('/assets/bg/forest_4k.hdr', function (texture) {
     texture.mapping = THREE.EquirectangularReflectionMapping;
     scene.background = texture;
     scene.environment = texture;

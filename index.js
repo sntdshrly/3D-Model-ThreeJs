@@ -59,13 +59,23 @@ loader.load('assets/scene.gltf', function (gltf) {
     directionalLight.target = gltf.scene;
 });
 // Floor
-const geo = new THREE.BoxGeometry(5000, 10, 5000);
-const mat = new THREE.MeshBasicMaterial({ map: grassTexture });
-// const mat = new THREE.MeshLambertMaterial({map:grassTexture, aoMap: grassTextureAo, bumpMap: grassTextureHeight, normalMap: grassTextureNormal});
-const floor = new THREE.Mesh(geo, mat);
-floor.position.set(0, -100, 0);
-floor.receiveShadow = true;
-scene.add(floor);
+// const geo = new THREE.BoxGeometry(5000, 10, 5000);
+// const mat = new THREE.MeshBasicMaterial({ map: grassTexture });
+// // const mat = new THREE.MeshLambertMaterial({map:grassTexture, aoMap: grassTextureAo, bumpMap: grassTextureHeight, normalMap: grassTextureNormal});
+// const floor = new THREE.Mesh(geo, mat);
+// floor.position.set(0, -100, 0);
+// floor.receiveShadow = true;
+// scene.add(floor);
+// Background
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.6;
+renderer.outputEncoding = THREE.sRGBEncoding;
+let loader_bg =  new THREE.RGBELoader();
+loader_bg.load('/assets/bg/forest_4k.hdr', function (texture) {
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    scene.background = texture;
+    scene.environment = texture;
+});
 // Animate
 function animate() {
     renderer.render(scene, camera);
