@@ -1,5 +1,6 @@
 // Variable
 let scene, camera, renderer;
+let speed = 5;
 // Scene
 scene = new THREE.Scene();
 scene.background = new THREE.Color(0xdddddd);
@@ -21,29 +22,29 @@ window.addEventListener('resize', (evt) => {
 });
 controls = new THREE.OrbitControls(camera, renderer.domElement);
 // Light
-hlight = new THREE.AmbientLight(0x404040, 0.2);
-scene.add(hlight);
-directionalLight = new THREE.DirectionalLight(0x696880, 100);
+// hlight = new THREE.AmbientLight(0x404040, 0.2);
+// scene.add(hlight);
+directionalLight = new THREE.DirectionalLight(0x404040, 100);
 directionalLight.position.set(0,500,500);
 directionalLight.castShadow = true;
 scene.add(directionalLight);
-light = new THREE.PointLight(0xc4c4c4, 10);
-light.position.set(-500, 100, 0);
-scene.add(light);
-light2 = new THREE.PointLight(0xc4c4c4, 10);
-light2.position.set(500, 100, 0);
-scene.add(light2);
-light3 = new THREE.PointLight(0xc4c4c4, 10);
-light3.position.set(0, 100, -500);
-scene.add(light3);
-light4 = new THREE.PointLight(0xc4c4c4, 10);
-light4.position.set(0, 100, 500);
-scene.add(light4);
+// light = new THREE.PointLight(0xc4c4c4, 10);
+// light.position.set(-500, 100, 0);
+// scene.add(light);
+// light2 = new THREE.PointLight(0xc4c4c4, 10);
+// light2.position.set(500, 100, 0);
+// scene.add(light2);
+// light3 = new THREE.PointLight(0xc4c4c4, 10);
+// light3.position.set(0, 100, -500);
+// scene.add(light3);
+// light4 = new THREE.PointLight(0xc4c4c4, 10);
+// light4.position.set(0, 100, 500);
+// scene.add(light4);
 // Helper
 // const helper01 = new THREE.PointLightHelper(directionalLight,200,new THREE.Color(1,0,0));
 // scene.add(helper01);
-const helper02 = new THREE.DirectionalLightHelper(directionalLight, 200, new THREE.Color(1, 0, 0));
-scene.add(helper02);
+// const helper02 = new THREE.DirectionalLightHelper(directionalLight, 200, new THREE.Color(1, 0, 0));
+// scene.add(helper02);
 // Texture
 const grassTexture = new THREE.TextureLoader().load('assets/grass/grass1-albedo3.png');
 const grassTextureAo = new THREE.TextureLoader().load('assets/grass/grass1-ao.png');
@@ -58,6 +59,24 @@ loader.load('assets/scene.gltf', function (gltf) {
     scene.add(gltf.scene);
     directionalLight.target = gltf.scene;
 });
+// Controlling car
+let state = [];
+document.body.addEventListener('keydown',(ev)=>{
+    state[ev.key] = true
+});
+document.body.addEventListener('keyup',(ev)=>{
+    state[ev.key] = false
+});
+function controlling(){
+    if(state['a']){
+        // Maju
+        car.position.z += speed;
+    }
+    if(state['d']){
+        // Mundur
+        car.position.z -= speed;
+    }
+}
 // Floor
 // const geo = new THREE.BoxGeometry(5000, 10, 5000);
 // const mat = new THREE.MeshBasicMaterial({ map: grassTexture });
@@ -80,5 +99,6 @@ loader_bg.load('/assets/bg/forest_4k.hdr', function (texture) {
 function animate() {
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
+    controlling();
 }
 animate();
