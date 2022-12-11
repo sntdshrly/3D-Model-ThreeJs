@@ -88,8 +88,15 @@ function controlling(){
         // Mundur
         car.position.z -= speed;
     }
+    if(state['x']){
+        // Putar kanan
+        car.rotation.z += 0.01;
+    }
+    if(state['w']){
+        // Putar kiri
+        car.rotation.z -= 0.01;
+    }
 }
-
 // Floor
 // const geo = new THREE.BoxGeometry(5000, 10, 5000);
 // const mat = new THREE.MeshBasicMaterial({ map: grassTexture });
