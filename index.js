@@ -59,13 +59,25 @@ loader.load('assets/scene.gltf', function (gltf) {
     scene.add(gltf.scene);
     directionalLight.target = gltf.scene;
 });
+// Audio
+const listener = new THREE.AudioListener();
+camera.add( listener );
+const sound = new THREE.Audio( listener );
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( 'assets/sound/driving.ogg', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 0.5 );
+});
 // Controlling car
 let state = [];
 document.body.addEventListener('keydown',(ev)=>{
     state[ev.key] = true
+    sound.play();
 });
 document.body.addEventListener('keyup',(ev)=>{
     state[ev.key] = false
+    sound.stop();
 });
 function controlling(){
     if(state['a']){
@@ -77,6 +89,7 @@ function controlling(){
         car.position.z -= speed;
     }
 }
+
 // Floor
 // const geo = new THREE.BoxGeometry(5000, 10, 5000);
 // const mat = new THREE.MeshBasicMaterial({ map: grassTexture });

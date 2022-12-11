@@ -20,6 +20,17 @@ document.body.appendChild(renderer.domElement);
 //     renderer.setSize(window.innerWidth, window.innerHeight);
 // });
 // controls = new THREE.OrbitControls(camera, renderer.domElement);
+// Audio
+const listener = new THREE.AudioListener();
+camera.add( listener );
+const sound = new THREE.Audio( listener );
+const audioLoader = new THREE.AudioLoader();
+audioLoader.load( 'assets/sound/driving.ogg', function( buffer ) {
+	sound.setBuffer( buffer );
+	sound.setLoop( true );
+	sound.setVolume( 0.5 );
+});
+
 // Car
 let loader = new THREE.GLTFLoader();
 loader.load('assets/scene.gltf', function (gltf) {
@@ -34,10 +45,12 @@ let state = [];
 document.body.addEventListener('keydown',(ev)=>{
     console.log(ev);
     state[ev.key] = true
+    sound.play();
 });
 document.body.addEventListener('keyup',(ev)=>{
     console.log(ev);
     state[ev.key] = false
+    sound.stop();
 });
 const speed = 5;
 function controlling(){
