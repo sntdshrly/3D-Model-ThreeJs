@@ -33,7 +33,7 @@ audioLoader.load( 'assets/sound/driving.ogg', function( buffer ) {
 
 // Car
 let loader = new THREE.GLTFLoader();
-loader.load('assets/scene.gltf', function (gltf) {
+loader.load('assets2/scene.gltf', function (gltf) {
     car = gltf.scene.children[0];
     car.scale.set(0.25, 0.25, 0.25);
     car.position.set(0, 0, 0);
