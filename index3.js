@@ -35,7 +35,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.6;
 renderer.outputEncoding = THREE.sRGBEncoding;
 let loader_bg = new THREE.RGBELoader();
-loader_bg.load("/assets/bg/forest_4k.hdr", function (texture) {
+loader_bg.load("/assets/bg/kloppenheim_01_4k.hdr", function (texture) {
   texture.mapping = THREE.EquirectangularReflectionMapping;
   scene.background = texture;
   scene.environment = texture;

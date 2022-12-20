@@ -25,8 +25,9 @@ Lighting.worldLighting(scene);
 let loader = new THREE.GLTFLoader();
 loader.load("assets/scene.gltf", function (gltf) {
   car = gltf.scene.children[0];
-  car.scale.set(0.25, 0.25, 0.25);
+  car.scale.set(0.2, 0.2, 0.2);
   car.position.set(0, 0, 0);
+  car.rotation.set(300, 0, 0);
   scene.add(gltf.scene);
 });
 
