@@ -1,6 +1,6 @@
 // Variable
 let scene, camera, renderer;
-let speed = 5;
+let speed = 15;
 
 // Scene
 scene = new THREE.Scene();
@@ -23,7 +23,12 @@ Lighting.worldLighting(scene);
 
 // Car
 let loader = new THREE.GLTFLoader();
-loader.load("assets/scene.gltf", function (gltf) {
+loader.load("assets/car/car.gltf", function (gltf) {
+  ban1 = gltf.scene.children[0].children[0].children[0].children[0];
+  ban2 = gltf.scene.children[0].children[0].children[0].children[1];
+  ban3 = gltf.scene.children[0].children[0].children[0].children[2];
+  ban4 = gltf.scene.children[0].children[0].children[0].children[3];
+  // console.log(gltf.scene);
   car = gltf.scene.children[0];
   car.scale.set(0.2, 0.2, 0.2);
   car.position.set(0, 0, 0);
@@ -57,19 +62,29 @@ function controlling() {
     // Maju
     car.position.z += speed;
     camera.position.z += speed;
+    ban1.rotation.x += speed;
+    ban2.rotation.x += speed;
+    ban3.rotation.x += speed;
+    ban4.rotation.x += speed;
   }
   if (state["s"] || state["ArrowDown"]) {
     // Mundur
     car.position.z -= speed;
     camera.position.z -= speed;
+    ban1.rotation.x -= speed;
+    ban2.rotation.x -= speed;
+    ban3.rotation.x -= speed;
+    ban4.rotation.x -= speed;
   }
   if (state["a"] || state["ArrowLeft"]) {
     // Putar kanan
-    car.rotation.z += 0.01;
+    ban1.rotation.z += 0.01;
+    ban2.rotation.z += 0.01;
   }
   if (state["d"] || state["ArrowRight"]) {
     // Putar kiri
-    car.rotation.z -= 0.01;
+    ban1.rotation.z -= 0.01;
+    ban2.rotation.z -= 0.01;
   }
 }
 
