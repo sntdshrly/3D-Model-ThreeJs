@@ -1,6 +1,43 @@
 // Variable
 let scene, camera, renderer;
-let speed = 15;
+let isSlowDown = false;
+let isAccel = false;
+let speed = 0;
+let maxSpeed = 25;
+let rotation_ban;
+let tacho = 0;
+let gas = 1;
+let mileage = 0;
+
+// Speedometer
+let turnSignalsStates = {
+  'left':  false,
+  'right': false
+}
+let iconsStates = {
+  // main circle
+  'dippedBeam': 0,
+  'brake':      0,
+  'drift':      0,
+  'highBeam':   0,
+  'lock':       1,
+  'seatBelt':   1,
+  'engineTemp': 2,
+  'stab':       2,
+  'abs':        2,
+  // right circle
+  'gas':        0,
+  'trunk':      0,
+  'bonnet':     0,
+  'doors':      0,
+  // left circle
+  'battery':    0,
+  'oil':        0,
+  'engineFail': 0
+}
+function redraw() {
+  draw(speed/maxSpeed, tacho/4, gas, mileage, turnSignalsStates, iconsStates);
+}
 
 // Scene
 scene = new THREE.Scene();
@@ -34,6 +71,8 @@ loader.load("assets/car/car.gltf", function (gltf) {
   car.position.set(0, 0, 0);
   car.rotation.set(300, 0, 0);
   scene.add(gltf.scene);
+  rotation_ban = [ban1.rotation.x, ban2.rotation.x, ban1.rotation.z, ban2.rotation.z];
+  controls.target = car.position;
 });
 
 // Audio
@@ -44,47 +83,117 @@ const audioLoader = new THREE.AudioLoader();
 audioLoader.load("assets/sound/driving.ogg", function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
-  sound.setVolume(0.5);
+  sound.setVolume(1);
 });
+function gasSound() {
+  if (isAccel) {
+    sound.play();
+  } else {
+    sound.stop();
+  }
+}
 
 // Controlling car
 let state = [];
 document.body.addEventListener("keydown", (ev) => {
+  isSlowDown = false;
+  if (speed < maxSpeed && !(ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight")) {
+    speed += 0.1;
+    tacho += 0.01;
+    gas -= 0.001;
+  }
+  // sound.play();
   state[ev.key] = true;
-  sound.play();
+  // console.log(state);
 });
 document.body.addEventListener("keyup", (ev) => {
-  state[ev.key] = false;
-  sound.stop();
+  isSlowDown = true;
+  if (ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight") {
+    state[ev.key] = false;
+  }
+  // console.log(state);
 });
+
 function controlling() {
   if (state["w"] || state["ArrowUp"]) {
     // Maju
     car.position.z += speed;
     camera.position.z += speed;
+    ban1.rotation.z = rotation_ban[2];
+    ban2.rotation.z = rotation_ban[3];
     ban1.rotation.x += speed;
     ban2.rotation.x += speed;
     ban3.rotation.x += speed;
     ban4.rotation.x += speed;
+    // sound.play();
+    isAccel = true;
+    if (speed < 1) {
+      state["w"] = false;
+      state["ArrowUp"] = false;
+      isAccel = false;
+    }
+    if (state['s'] || state['ArrowDown']) {
+      isSlowDown = true;
+      state["w"] = false;
+      state["ArrowUp"] = false;
+    }
   }
   if (state["s"] || state["ArrowDown"]) {
     // Mundur
     car.position.z -= speed;
     camera.position.z -= speed;
+    ban1.rotation.z = rotation_ban[2];
+    ban2.rotation.z = rotation_ban[3];
     ban1.rotation.x -= speed;
     ban2.rotation.x -= speed;
     ban3.rotation.x -= speed;
     ban4.rotation.x -= speed;
+    isAccel = true;
+    // sound.play();
+    if (speed < 1) {
+      state["s"] = false;
+      state["ArrowDown"] = false;
+      isAccel = false;
+    }
+    if (state['w'] || state['ArrowUp']) {
+      isSlowDown = true;
+      state["s"] = false;
+      state["ArrowDown"] = false;
+    }
   }
   if (state["a"] || state["ArrowLeft"]) {
     // Putar kanan
-    ban1.rotation.z += 0.01;
-    ban2.rotation.z += 0.01;
+    if (!(state['w'] || state['ArrowUp']) && !(state["s"] || state["ArrowDown"])) { 
+      ban1.rotation.x = rotation_ban[0];
+      ban2.rotation.x = rotation_ban[1];
+    }
+    
+    if (ban1.rotation.z < 3.75) { 
+      ban1.rotation.z += 0.01;
+      ban2.rotation.z += 0.01;
+    }
   }
   if (state["d"] || state["ArrowRight"]) {
     // Putar kiri
-    ban1.rotation.z -= 0.01;
-    ban2.rotation.z -= 0.01;
+    if (!(state['w'] || state['ArrowUp']) && !(state["s"] || state["ArrowDown"])) { 
+      ban1.rotation.x = rotation_ban[0];
+      ban2.rotation.x = rotation_ban[1];
+    }
+    if (ban1.rotation.z > 2.5) { 
+      ban1.rotation.z -= 0.01;
+      ban2.rotation.z -= 0.01;
+    }
+  }
+}
+
+function slowDown() {
+  if (isSlowDown && speed > 0) {
+    speed -= 0.1;
+    tacho -= 0.01;
+  } else {
+    isSlowDown = false;
+    // speed = 0;
+    // sound.stop();
   }
 }
 
@@ -106,6 +215,14 @@ loader_bg.load("/assets/bg/kloppenheim_01_4k.hdr", function (texture) {
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
+  
+  controls.update();
   controlling();
+  slowDown();
+  redraw();
+  gasSound();
+  // console.log(state);
+  // ban1.rotation.z += 0.01;
 }
+redraw();
 animate();

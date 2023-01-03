@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ThreeJS</title>
     <link href="https://fonts.googleapis.com/css2?family=Play:wght@700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="css/styles.css" />
     <style>
       body {
         overflow: hidden;
@@ -66,6 +67,10 @@
   </head>
 
   <body>
+    <div id="speedometer">
+      <div style="display: none"><img id="sprite" src="assets/icons.svg" /></div>
+      <canvas id="canvas" width="425" height="210"></canvas>
+    </div>
     <script src="node_modules/three/build/three.js"></script>
     <script src="node_modules/three/examples/js/controls/OrbitControls.js"></script>
     <script src="node_modules/three/examples/js/loaders/GLTFLoader.js"></script>
@@ -74,6 +79,8 @@
     <script src="lib/floor.js"></script>
     <script src="lib/camera.js"></script>
     <script src="lib/lighting.js"></script>
+    <script src="lib/fraction.min.js"></script>
+    <script src="lib/speedometer.js"></script>
     <script src="index.js"></script>
     <script>
       window.addEventListener("resize", (evt) => {
@@ -82,7 +89,8 @@
         renderer.setSize(window.innerWidth, window.innerHeight);
       });
     </script>
-
+    
+    
     <button style="right: 0; bottom: 0" onclick="document.location='index2.html'" class="noselect"></button>
   </body>
 </html>
