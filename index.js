@@ -8,6 +8,7 @@ let rotation_ban;
 let tacho = 0;
 let gas = 1;
 let mileage = 0;
+let isKlakson = false;
 
 // Speedometer
 let turnSignalsStates = {
@@ -93,10 +94,29 @@ function gasSound() {
   }
 }
 
+// Klakson
+const listenerKlakson = new THREE.AudioListener();
+camera.add(listenerKlakson);
+const soundKlakson = new THREE.Audio(listenerKlakson);
+const klaksonLoader = new THREE.AudioLoader();
+klaksonLoader.load("assets/sound/klakson.ogg", function (buffer) {
+  soundKlakson.setBuffer(buffer);
+  soundKlakson.setLoop(true);
+  soundKlakson.setVolume(1);
+});
+function klaksonSound() {
+  if (isKlakson) {
+    soundKlakson.play();
+  } else {
+    soundKlakson.stop();
+  }
+}
+
 // Controlling car
 let state = [];
 document.body.addEventListener("keydown", (ev) => {
   isSlowDown = false;
+  isStop = false;
   if (speed < maxSpeed && !(ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight")) {
     speed += 0.1;
     tacho += 0.01;
@@ -108,7 +128,7 @@ document.body.addEventListener("keydown", (ev) => {
 });
 document.body.addEventListener("keyup", (ev) => {
   isSlowDown = true;
-  if (ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight") {
+  if (ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight" || ev.key == "Enter" || ev.key == "x") {
     state[ev.key] = false;
   }
   // console.log(state);
@@ -184,6 +204,15 @@ function controlling() {
       ban2.rotation.z -= 0.01;
     }
   }
+  // Rem
+  if(state["Enter"]){
+      isStop = true;
+  }
+  // Klakson
+  if(state["x"]){
+    isKlakson = true;
+    console.log(isKlakson);
+}
 }
 
 function slowDown() {
@@ -192,6 +221,17 @@ function slowDown() {
     tacho -= 0.01;
   } else {
     isSlowDown = false;
+    // speed = 0;
+    // sound.stop();
+  }
+}
+
+function stop() {
+  if (isStop && speed > 0) {
+    speed -= 0.2;
+    tacho -= 0.01;
+  } else {
+    isStop = false;
     // speed = 0;
     // sound.stop();
   }
@@ -211,6 +251,29 @@ loader_bg.load("/assets/bg/kloppenheim_01_4k.hdr", function (texture) {
   scene.environment = texture;
 });
 
+// Rain
+// let rain;
+// let rainCount = 15000;
+// let vertices = [];
+// rainGeo = new THREE.BufferGeometry();
+// for(let i=0;i<rainCount;i++) {
+//   rainDrop = new THREE.Vector3(
+//     Math.random() * 400 -200,
+//     Math.random() * 500 - 250,
+//     Math.random() * 400 - 200
+//   );
+//   vertices.push(rainDrop);
+// }
+// rainMaterial = new THREE.PointsMaterial({
+//   color: 0xaaaaaa,
+//   size: 1000,
+//   transparent: true
+// });
+// rainGeo.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+// rain = new THREE.Points(rainGeo,rainMaterial);
+// scene.add(rain);
+// scene.fog = new THREE.Fog(0xDFE9F3, 10, 5000);
+
 // Animate
 function animate() {
   requestAnimationFrame(animate);
@@ -219,6 +282,7 @@ function animate() {
   controls.update();
   controlling();
   slowDown();
+  stop();
   redraw();
   gasSound();
   // console.log(state);
