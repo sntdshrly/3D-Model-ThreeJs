@@ -205,7 +205,7 @@ function controlling() {
     }
   }
   // Rem
-  if(state["Enter"]){
+  if(state[" "]){
       isStop = true;
   }
   // Klakson
@@ -229,9 +229,10 @@ function slowDown() {
 function stop() {
   if (isStop && speed > 0) {
     speed -= 0.2;
-    tacho -= 0.01;
+    tacho -= 0.02;
   } else {
     isStop = false;
+    state[" "] = false;
     // speed = 0;
     // sound.stop();
   }
