@@ -1,6 +1,7 @@
 // Variable
 let scene, camera, renderer;
 let isSlowDown = false;
+let isStop = true;
 let isAccel = false;
 let speed = 0;
 let maxSpeed = 25;
@@ -84,13 +85,14 @@ const audioLoader = new THREE.AudioLoader();
 audioLoader.load("assets/sound/driving.ogg", function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
-  sound.setVolume(1);
+  sound.setVolume(0.3);
+  sound.play()
 });
 function gasSound() {
   if (isAccel) {
-    sound.play();
+      sound.setVolume(Math.max(0.3, (speed / maxSpeed) * 2));
   } else {
-    sound.stop();
+    sound.setVolume(0.3);
   }
 }
 
@@ -101,34 +103,32 @@ const soundKlakson = new THREE.Audio(listenerKlakson);
 const klaksonLoader = new THREE.AudioLoader();
 klaksonLoader.load("assets/sound/klakson.ogg", function (buffer) {
   soundKlakson.setBuffer(buffer);
-  soundKlakson.setLoop(true);
-  soundKlakson.setVolume(1);
+  soundKlakson.setLoop(false);
+  soundKlakson.setVolume(0.3);
 });
-function klaksonSound() {
-  if (isKlakson) {
-    soundKlakson.play();
-  } else {
-    soundKlakson.stop();
-  }
-}
 
 // Controlling car
 let state = [];
 document.body.addEventListener("keydown", (ev) => {
   isSlowDown = false;
   isStop = false;
-  if (speed < maxSpeed && !(ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight")) {
+  if (speed < maxSpeed && ((ev.key == "w") || (ev.key == "s") || (ev.key == "ArrowUp") || (ev.key == "ArrowDown"))) {
     speed += 0.1;
     tacho += 0.01;
     gas -= 0.001;
+  }
+  if (ev.key == "x") {
+    soundKlakson.play();
   }
   // sound.play();
   state[ev.key] = true;
   // console.log(state);
 });
 document.body.addEventListener("keyup", (ev) => {
-  isSlowDown = true;
-  if (ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight" || ev.key == "Enter" || ev.key == "x") {
+  if (ev.key != "x") {
+    isSlowDown = true;
+  }
+  if (ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight" || ev.key == "Enter") {
     state[ev.key] = false;
   }
   // console.log(state);
@@ -208,11 +208,6 @@ function controlling() {
   if(state[" "]){
       isStop = true;
   }
-  // Klakson
-  if(state["x"]){
-    isKlakson = true;
-    console.log(isKlakson);
-}
 }
 
 function slowDown() {
