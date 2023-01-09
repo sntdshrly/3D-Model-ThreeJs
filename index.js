@@ -90,7 +90,7 @@ audioLoader.load("assets/sound/driving.ogg", function (buffer) {
 });
 function gasSound() {
   if (isAccel) {
-      sound.setVolume(Math.max(0.3, (speed / maxSpeed) * 2));
+    sound.setVolume(Math.max(0.3, (speed / maxSpeed) * 2));
   } else {
     sound.setVolume(0.3);
   }
@@ -234,7 +234,14 @@ function stop() {
 }
 
 // Floor
-Floor.grassFloor(scene);
+const floor = Floor.grassFloor(scene);
+let maxFloorPosition = 4000;
+function checkFloor() {
+  if (car.position.z > maxFloorPosition) {
+    floor.position.z = maxFloorPosition;
+    maxFloorPosition += 4000;
+  }
+}
 
 // Background
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -281,8 +288,9 @@ function animate() {
   stop();
   redraw();
   gasSound();
+  checkFloor();
   // console.log(state);
-  // ban1.rotation.z += 0.01;
+  // car.position.z += 1;
 }
 redraw();
 animate();
