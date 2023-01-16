@@ -279,10 +279,12 @@ function carRotate() {
 
 // Floor
 const floor = Floor.grassFloor(scene);
+const floor2 = Floor.floor(scene);
 let maxFloorPosition = 4000;
 function checkFloor() {
   if (car.position.z > maxFloorPosition) {
     floor.position.z = maxFloorPosition;
+    floor2.position.z = maxFloorPosition;
     maxFloorPosition += 4000;
   }
 }
@@ -292,11 +294,12 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 0.6;
 renderer.outputEncoding = THREE.sRGBEncoding;
 let loader_bg = new THREE.RGBELoader();
-loader_bg.load("/assets/bg/kloppenheim_01_4k.hdr", function (texture) {
+loader_bg.load("/assets/bg/rustig_koppie_puresky_4k.hdr", function (texture) {
   texture.mapping = THREE.EquirectangularReflectionMapping;
   scene.background = texture;
   scene.environment = texture;
 });
+// scene.background = new THREE.Color('lightblue');
 
 // Rain
 // let rain;
@@ -319,7 +322,8 @@ loader_bg.load("/assets/bg/kloppenheim_01_4k.hdr", function (texture) {
 // rainGeo.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
 // rain = new THREE.Points(rainGeo,rainMaterial);
 // scene.add(rain);
-// scene.fog = new THREE.Fog(0xDFE9F3, 10, 5000);
+scene.fog = new THREE.Fog(0xa8b2c0  , 10, 5000);
+// scene.fog = new THREE.Fog(new THREE.Color('lightblue'), 10, 5000);
 
 // Animate
 function animate() {
