@@ -10,35 +10,36 @@ let tacho = 0;
 let gas = 1;
 let mileage = 0;
 let isKlakson = false;
+let isRotate = false;
 
 // Speedometer
 let turnSignalsStates = {
-  'left':  false,
-  'right': false
-}
+  left: false,
+  right: false,
+};
 let iconsStates = {
   // main circle
-  'dippedBeam': 0,
-  'brake':      0,
-  'drift':      0,
-  'highBeam':   0,
-  'lock':       1,
-  'seatBelt':   1,
-  'engineTemp': 2,
-  'stab':       2,
-  'abs':        2,
+  dippedBeam: 0,
+  brake: 0,
+  drift: 0,
+  highBeam: 0,
+  lock: 1,
+  seatBelt: 1,
+  engineTemp: 2,
+  stab: 2,
+  abs: 2,
   // right circle
-  'gas':        0,
-  'trunk':      0,
-  'bonnet':     0,
-  'doors':      0,
+  gas: 0,
+  trunk: 0,
+  bonnet: 0,
+  doors: 0,
   // left circle
-  'battery':    0,
-  'oil':        0,
-  'engineFail': 0
-}
+  battery: 0,
+  oil: 0,
+  engineFail: 0,
+};
 function redraw() {
-  draw(speed/maxSpeed, tacho/4, gas, mileage, turnSignalsStates, iconsStates);
+  draw(speed / maxSpeed, tacho / 4, gas, mileage, turnSignalsStates, iconsStates);
 }
 
 // Scene
@@ -86,7 +87,7 @@ audioLoader.load("assets/sound/driving.ogg", function (buffer) {
   sound.setBuffer(buffer);
   sound.setLoop(true);
   sound.setVolume(0.3);
-  sound.play()
+  sound.play();
 });
 function gasSound() {
   if (isAccel) {
@@ -110,13 +111,17 @@ klaksonLoader.load("assets/sound/klakson.ogg", function (buffer) {
 // Controlling car
 let state = [];
 document.body.addEventListener("keydown", (ev) => {
-  isSlowDown = false;
-  isStop = false;
-  if (speed < maxSpeed && ((ev.key == "w") || (ev.key == "s") || (ev.key == "ArrowUp") || (ev.key == "ArrowDown"))) {
-    speed += 0.1;
-    tacho += 0.01;
-    gas -= 0.001;
+  if (ev.key != "a" && ev.key != "d" && ev.key != "ArrowLeft" && ev.key != "ArrowRight" && ev.key != "x") { 
+    isSlowDown = false;
+    isStop = false;
   }
+  if (ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight") {
+    isRotate = true;
+  }
+  if (speed < maxSpeed && (ev.key == "w" || ev.key == "s" || ev.key == "ArrowUp" || ev.key == "ArrowDown")) {
+    state[ev.key] = true;
+  }
+
   if (ev.key == "x") {
     soundKlakson.play();
   }
@@ -125,16 +130,23 @@ document.body.addEventListener("keydown", (ev) => {
   // console.log(state);
 });
 document.body.addEventListener("keyup", (ev) => {
-  if (ev.key != "x") {
+  // if (ev.key != "x") {
+  if (ev.key == "w" || ev.key == "s" || ev.key == "ArrowUp" || ev.key == "ArrowDown") {
     isSlowDown = true;
   }
-  if (ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight" || ev.key == "Enter") {
+  if (ev.key == "a" || ev.key == "d" || ev.key == "ArrowLeft" || ev.key == "ArrowRight" || ev.key == " ") {
     state[ev.key] = false;
+    isRotate = false;
   }
   // console.log(state);
 });
 
 function controlling() {
+  if (!isStop && !isSlowDown && speed < maxSpeed && (state["w"] || state["ArrowUp"] || state["s"] || state["ArrowDown"])) {
+    speed += 0.1;
+    tacho += 0.01;
+    gas -= 0.001;
+  }
   if (state["w"] || state["ArrowUp"]) {
     // Maju
     car.position.z += speed;
@@ -152,7 +164,7 @@ function controlling() {
       state["ArrowUp"] = false;
       isAccel = false;
     }
-    if (state['s'] || state['ArrowDown']) {
+    if (state["s"] || state["ArrowDown"]) {
       isSlowDown = true;
       state["w"] = false;
       state["ArrowUp"] = false;
@@ -175,38 +187,48 @@ function controlling() {
       state["ArrowDown"] = false;
       isAccel = false;
     }
-    if (state['w'] || state['ArrowUp']) {
+    if (state["w"] || state["ArrowUp"]) {
       isSlowDown = true;
       state["s"] = false;
       state["ArrowDown"] = false;
     }
   }
   if (state["a"] || state["ArrowLeft"]) {
+    car.position.x += speed;
+    camera.position.x += speed;
+    if (car.rotation.z < 0.1) { 
+      car.rotation.z += 0.01;
+    }
     // Putar kanan
-    if (!(state['w'] || state['ArrowUp']) && !(state["s"] || state["ArrowDown"])) { 
+    if (!(state["w"] || state["ArrowUp"]) && !(state["s"] || state["ArrowDown"])) {
       ban1.rotation.x = rotation_ban[0];
       ban2.rotation.x = rotation_ban[1];
     }
-    
-    if (ban1.rotation.z < 3.75) { 
+
+    if (ban1.rotation.z < 3.75) {
       ban1.rotation.z += 0.01;
       ban2.rotation.z += 0.01;
     }
   }
   if (state["d"] || state["ArrowRight"]) {
+    car.position.x -= speed;
+    camera.position.x -= speed;
+    if (car.rotation.z > -0.1) { 
+      car.rotation.z -= 0.01;
+    }
     // Putar kiri
-    if (!(state['w'] || state['ArrowUp']) && !(state["s"] || state["ArrowDown"])) { 
+    if (!(state["w"] || state["ArrowUp"]) && !(state["s"] || state["ArrowDown"])) {
       ban1.rotation.x = rotation_ban[0];
       ban2.rotation.x = rotation_ban[1];
     }
-    if (ban1.rotation.z > 2.5) { 
+    if (ban1.rotation.z > 2.5) {
       ban1.rotation.z -= 0.01;
       ban2.rotation.z -= 0.01;
     }
   }
   // Rem
-  if(state[" "]){
-      isStop = true;
+  if (state[" "]) {
+    isStop = true;
   }
 }
 
@@ -230,6 +252,17 @@ function stop() {
     state[" "] = false;
     // speed = 0;
     // sound.stop();
+  }
+}
+
+function carRotate() {
+  if (car.rotation.z != 0 && !isRotate) {
+    if (car.rotation.z > 0) {
+      car.rotation.z -= 0.01;
+    }
+    if (car.rotation.z < 0) {
+      car.rotation.z += 0.01;
+    }
   }
 }
 
@@ -281,7 +314,7 @@ loader_bg.load("/assets/bg/kloppenheim_01_4k.hdr", function (texture) {
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
-  
+
   controls.update();
   controlling();
   slowDown();
@@ -289,6 +322,7 @@ function animate() {
   redraw();
   gasSound();
   checkFloor();
+  carRotate();
   // console.log(state);
   // car.position.z += 1;
 }
