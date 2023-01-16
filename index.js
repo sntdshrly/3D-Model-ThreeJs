@@ -51,12 +51,17 @@ camera = Camera.get();
 
 // Renderer
 renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Orbit Controls
 controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enablePan = false;
+controls.maxPolarAngle = Math.PI/2; 
+controls.minDistance = 500;
+controls.maxDistance = 1000;
 
 // Light
 Lighting.worldLighting(scene);
@@ -71,8 +76,10 @@ loader.load("assets/car/car.gltf", function (gltf) {
   // console.log(gltf.scene);
   car = gltf.scene.children[0];
   car.scale.set(0.2, 0.2, 0.2);
-  car.position.set(0, 0, 0);
+  car.position.set(0, 75, 0);
   car.rotation.set(300, 0, 0);
+  car.castShadow = true;
+  car.receiveShadow = true;
   scene.add(gltf.scene);
   rotation_ban = [ban1.rotation.x, ban2.rotation.x, ban1.rotation.z, ban2.rotation.z];
   controls.target = car.position;
@@ -194,8 +201,10 @@ function controlling() {
     }
   }
   if (state["a"] || state["ArrowLeft"]) {
-    car.position.x += speed;
-    camera.position.x += speed;
+    if (car.position.x < 750) { 
+      car.position.x += speed;
+      camera.position.x += speed;
+    }
     if (car.rotation.z < 0.1) { 
       car.rotation.z += 0.01;
     }
@@ -211,8 +220,10 @@ function controlling() {
     }
   }
   if (state["d"] || state["ArrowRight"]) {
-    car.position.x -= speed;
-    camera.position.x -= speed;
+    if (car.position.x > -750) { 
+      car.position.x -= speed;
+      camera.position.x -= speed;
+    }
     if (car.rotation.z > -0.1) { 
       car.rotation.z -= 0.01;
     }
