@@ -1,100 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ThreeJS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Play:wght@700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css" />
-    <style>
-      body {
-        overflow: hidden;
-        margin: 0;
-      }
 
-      .noselect {
-        position: absolute;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ThreeJS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Play:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"></link>
+  <style>
+    body {
+      overflow: hidden;
+      margin: 0;
+    }
 
-      button,
-      button:before {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
+    .noselect {
+      position: absolute;
+    }
 
-      button {
-        width: 150px;
-        height: 50px;
-        cursor: pointer;
-        font-family: "Play", sans-serif;
-        font-size: 20px;
-        color: white;
-        border: none;
-        border-radius: 25px;
-        background-image: url("assets/bg/hazard-stripes-wallpaper.jpg");
-        background-size: 150%;
-        background-position: left;
-        transition: 1s;
-        margin: 20px;
-      }
+    button,
+    button:before {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-      button:before {
-        width: 150px;
-        height: 50px;
-        content: "Next";
-        background: rgba(0, 0, 0, 0.6);
-        border-radius: 25px;
-        position: absolute;
-        transition: 500ms;
-      }
+    button {
+      width: 150px;
+      height: 50px;
+      cursor: pointer;
+      font-family: "Play", sans-serif;
+      font-size: 20px;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      background-image: url("assets/bg/hazard-stripes-wallpaper.jpg");
+      background-size: 150%;
+      background-position: left;
+      transition: 1s;
+      margin: 20px;
+    }
 
-      button:hover:before {
-        background: rgba(0, 0, 0, 0);
-        text-shadow: 1px 1px 1px black;
-      }
+    button:before {
+      width: 150px;
+      height: 50px;
+      content: "Next";
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 25px;
+      position: absolute;
+      transition: 500ms;
+    }
 
-      button:hover {
-        background-position: center;
-        box-shadow: 0px 0px 10px rgba(232, 218, 26, 0.5);
-      }
+    button:hover:before {
+      background: rgba(0, 0, 0, 0);
+      text-shadow: 1px 1px 1px black;
+    }
 
-      button:focus {
-        outline: none;
-      }
-    </style>
-  </head>
+    button:hover {
+      background-position: center;
+      box-shadow: 0px 0px 10px rgba(232, 218, 26, 0.5);
+    }
 
-  <body>
-    <div id="speedometer">
-      <div style="display: none"><img id="sprite" src="assets/icons.svg" /></div>
-      <canvas id="canvas" width="425" height="210"></canvas>
-    </div>
-    <div id="color-picker">
-      <label for="color">Change Car Color</label>
-      <input type="color" name="color" id="color">
-    </div>
-    <script src="node_modules/three/build/three.js"></script>
-    <script src="node_modules/three/examples/js/controls/OrbitControls.js"></script>
-    <script src="node_modules/three/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="node_modules/three/examples/js/loaders/RGBELoader.js"></script>
-    <script src="node_modules/three/examples/js/renderers/CSS3DRenderer.js"></script>
-    <script src="lib/floor.js"></script>
-    <script src="lib/camera.js"></script>
-    <script src="lib/lighting.js"></script>
-    <script src="lib/fraction.min.js"></script>
-    <script src="lib/speedometer.js"></script>
-    <script src="index.js"></script>
-    <script>
-      window.addEventListener("resize", (evt) => {
-        camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-      });
-    </script>
+    button:focus {
+      outline: none;
+    }
+    /* label {
+      color: rgb(0, 0, 0);
+      font-weight: bold;
+      display: block;
+      width: 135px;
+    } */
     
-    
-    <!-- <button style="right: 0; bottom: 0" onclick="document.location='index2.html'" class="noselect"></button> -->
-  </body>
+    i { 
+      width: 30px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="speedometer">
+    <div style="display: none"><img id="sprite" src="assets/icons.svg" /></div>
+    <canvas id="canvas" width="425" height="210"></canvas>
+  </div>
+  <div id="color-picker">
+    <!-- <label for="color">Change Car Color</label> -->
+    <i class="fa-solid fa-fill-drip"></i>
+    <input type="color" name="color" id="color">
+  </div>
+  <script src="node_modules/three/build/three.js"></script>
+  <script src="node_modules/three/examples/js/controls/OrbitControls.js"></script>
+  <script src="node_modules/three/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="node_modules/three/examples/js/loaders/RGBELoader.js"></script>
+  <script src="node_modules/three/examples/js/renderers/CSS3DRenderer.js"></script>
+  <script src="lib/floor.js"></script>
+  <script src="lib/camera.js"></script>
+  <script src="lib/lighting.js"></script>
+  <script src="lib/fraction.min.js"></script>
+  <script src="lib/speedometer.js"></script>
+  <script src="index.js"></script>
+  <script>
+    window.addEventListener("resize", (evt) => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+  <!-- <button style="right: 0; bottom: 0" onclick="document.location='index2.html'" class="noselect"></button> -->
+</body>
+
 </html>
