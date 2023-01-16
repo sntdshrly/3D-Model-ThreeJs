@@ -148,6 +148,16 @@ document.body.addEventListener("keyup", (ev) => {
   // console.log(state);
 });
 
+const colorPicker = document.getElementById("color");
+colorPicker.addEventListener("change", (ev) => {
+  let color = hexTorgb(colorPicker.value);
+  car.children[0].children[0].children[9].children[5].children[0].material.color.set(new THREE.Color(`rgb(${color[0]}, ${color[1]}, ${color[2]})`));
+});
+
+function hexTorgb(hex) {
+  return [("0x" + hex[1] + hex[2]) | 0, ("0x" + hex[3] + hex[4]) | 0, ("0x" + hex[5] + hex[6]) | 0];
+}
+
 function controlling() {
   if (!isStop && !isSlowDown && speed < maxSpeed && (state["w"] || state["ArrowUp"] || state["s"] || state["ArrowDown"])) {
     speed += 0.1;
